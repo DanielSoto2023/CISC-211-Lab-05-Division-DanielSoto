@@ -14,7 +14,7 @@
 .type nameStr,%gnu_unique_object
     
 /*** STUDENTS: Change the next line to your name!  **/
-nameStr: .asciz "Inigo Montoya"  
+nameStr: .asciz "Daniel Soto"  
 
 .align   /* realign so that next mem allocations are on word boundaries */
  
@@ -80,7 +80,52 @@ asmFunc:
      * Use it to test the C test code */
     
     /*** STUDENTS: Place your code BELOW this line!!! **************/
-
+    
+    LDR r3,=dividend /*Store values in locations, clear previous test values*/
+    STR r0,[r3]
+    LDR r3,=divisor
+    STR r1,[r3]
+    LDR r3,=quotient
+    LDR r4,=0
+    STR r4,[r3]
+    LDR r3,=mod
+    STR r4,[r3]
+    LDR r3,=we_have_a_problem
+    STR r4,[r3]
+    
+    LDR r3, =0xFFFFFFFF /*Tests for errors*/
+    TST r3,r0
+    BEQ problem
+    TST r3,r1
+    BEQ problem
+    
+    LDR r5,=1 
+    LDR r3,=quotient
+    
+    loop:
+    CMP r0,r1
+    BLO post_loop
+    
+    LDR r4,[r3] /*Adds 1 to Quotient & Dividend - Divisor*/
+    ADD r4,r5,r4
+    STR r4,[r3]
+    
+    SUB r0,r0,r1 
+    BAL loop
+    
+    post_loop: /*Store mod result and quotient result*/
+    LDR r4,=mod
+    STR r0,[r4]
+    LDR r0,[r3]
+    LDR r0,=quotient
+    BAL done
+    
+    problem: /*Handle the error*/
+    LDR r0,=1
+    LDR r1,=we_have_a_problem
+    STR r0,[r1]
+    LDR r0,=quotient
+    BAL done
     
     /*** STUDENTS: Place your code ABOVE this line!!! **************/
 
